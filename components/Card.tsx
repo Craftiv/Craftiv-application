@@ -31,7 +31,11 @@ export default function Card({ item, isAddButton = false }: CardProps) {
 
   return (
     <TouchableOpacity style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
+      {item.image ? (
+        <Image source={{ uri: item.image }} style={styles.image} />
+      ) : (
+        <View style={styles.image} />
+      )}
       <Text style={styles.label} numberOfLines={1}>{item.label}</Text>
     </TouchableOpacity>
   );

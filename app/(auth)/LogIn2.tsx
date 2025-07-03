@@ -1,11 +1,11 @@
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Google from 'expo-auth-session/providers/google';
-import { router } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { jwtDecode } from 'jwt-decode';
-import { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Alert, BackHandler, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 const navigation=useNavigation;
@@ -17,9 +17,8 @@ type UserInfo = {
 
 
 export default function LogIn2() {
-
-
-const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const router = useRouter();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -44,7 +43,16 @@ const [errorMsg, setErrorMsg] = useState<string | null>(null);
     }
   };
 
-
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.push('/Splash');
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }, [router])
+  );
 
   return (
     <View style={styles.container}>
@@ -52,7 +60,7 @@ const [errorMsg, setErrorMsg] = useState<string | null>(null);
         <TouchableOpacity onPress={()=> router.back()}>
           <Ionicons name="chevron-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.title}>Continue to sign up for free</Text>
+        <Text style={styles.title}>Continue to sign in </Text>
         
       </View>
       
@@ -64,7 +72,7 @@ const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
       <TouchableOpacity style={styles.button} onPress={handleGoogleSignIn}>
   <Image
-    source={require('../../../assets/images/google.png')} // place the image in your assets folder
+    source={require('../../assets/images/google.png')} // place the image in your assets folder
     style={{ width: 28, height: 28, marginRight: 8 }}
   />
   <Text style={styles.buttonText}>Continue with Google</Text>
@@ -89,7 +97,7 @@ const [errorMsg, setErrorMsg] = useState<string | null>(null);
         <Text style={styles.buttonText}>Continue with Facebook</Text>
       </TouchableOpacity>
 
-              <TouchableOpacity style={styles.button} onPress={() => router.push('/(drawer)/(auth)/LogIn')}>
+              <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/LogIn')}>
         <Ionicons name="mail-outline" size={24} color="black" />
         <Text style={styles.buttonText}>Continue with email</Text>
       </TouchableOpacity>
@@ -140,7 +148,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   link: {
-    color: 'hotpink',
+    color: '#6366F1',
+    fontFamily: 'Montserrat_700Bold',
   },
   terms: {
     fontSize: 12,

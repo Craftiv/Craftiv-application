@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -17,30 +18,59 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { setIsAuthenticated } = useAuth();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.push('/Splash');
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }, [router])
+  );
 
   const handleLogin = async () => {
     if (!name || !email || !password) {
       Alert.alert('Missing Fields', 'Please fill in all fields.');
       return;
     }
+    if (!email.includes('@')) {
+      Alert.alert('Error', 'Invalid email address');
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      Alert.alert(
+        'Weak Password',
+        'Password must be 8+ characters and include a capital letter, number, and special character'
+      );
+      return;
+    }
 
     setLoading(true);
 
-     // 🔁 Simulated API delay and success
-      Alert.alert('Loging in...', 'Please wait');
-      setTimeout(() => {
-        Alert.alert('Success', 'Log in');
-        router.replace('/(drawer)/(tabs)'); // Use push instead of replace
-      }, 1500);
+    // Simulated API delay and success
+    Alert.alert('Loging in...', 'Please wait');
+    setTimeout(() => {
+      Alert.alert('Success', 'Log in');
+      setIsAuthenticated(true);
+      router.replace('/(drawer)/(tabs)');
+    }, 1500);
 
     // try {
     //   const response = await fetch('https://your-backend.com/api/login', {
@@ -63,6 +93,15 @@ export default function LoginScreen() {
     // }
   };
 
+  const validateEmail = (value: string) => {
+    const isValid = /\S+@\S+\.\S+/.test(value);
+    setEmailError(isValid ? '' : 'Please enter a valid email address');
+  };
+
+  const validatePassword = (value: string) => {
+    setPasswordError(value.length >= 6 ? '' : 'Password must be at least 6 characters');
+  };
+
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -76,7 +115,7 @@ export default function LoginScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.wrapper}>
-              <Image source={require('../../../assets/images/Logo.png')} style={styles.logo} />
+              <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
 
               <View style={styles.container}>
                 <Text style={styles.title}>Login</Text>
@@ -96,18 +135,25 @@ export default function LoginScreen() {
                     style={styles.input}
                     placeholder="Email"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={value => {
+                      setEmail(value);
+                      validateEmail(value);
+                    }}
                     placeholderTextColor="#aaa"
                     keyboardType="email-address"
                     autoCapitalize="none"
                     returnKeyType="next"
                   />
+                  {emailError ? <Text style={{ color: 'red', marginBottom: 8 }}>{emailError}</Text> : null}
                   <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
                     <TextInput
                       style={[styles.input, { flex: 1, marginBottom: 0 }]}
                       placeholder="Password"
                       value={password}
-                      onChangeText={setPassword}
+                      onChangeText={value => {
+                        setPassword(value);
+                        validatePassword(value);
+                      }}
                       secureTextEntry={!showPassword}
                       placeholderTextColor="#aaa"
                       returnKeyType="done"
@@ -125,6 +171,7 @@ export default function LoginScreen() {
                       />
                     </TouchableOpacity>
                   </View>
+                  {passwordError ? <Text style={{ color: 'red', marginBottom: 8 }}>{passwordError}</Text> : null}
                 </View>
 
                 <TouchableOpacity

@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Keyboard,
   Pressable,
@@ -13,14 +14,27 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function EmailAuth() {
   const router = useRouter();
+  const { setIsAuthenticated } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.push('/Splash');
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }, [router])
+  );
 
   const handleSignUp = async () => {
     // 1. Validation
@@ -47,7 +61,8 @@ export default function EmailAuth() {
     Alert.alert('Signing up...', 'Please wait');
     setTimeout(() => {
       Alert.alert('Success', 'Account created!');
-      router.push('/(drawer)/(tabs)'); // Use push instead of replace
+      setIsAuthenticated(true);
+      router.replace('/(drawer)/(tabs)');
     }, 1500);
 
     // 2. API Request
@@ -80,7 +95,7 @@ export default function EmailAuth() {
       contentContainerStyle={styles.wrapper}
       keyboardShouldPersistTaps="handled"
     >
-      <View><Image source={require('../../../assets/images/Logo.png')} style={styles.logo} />
+      <View><Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
       </View>
       <View style={styles.container}>
         <Text style={styles.title}>Sign Up</Text>
@@ -145,7 +160,7 @@ export default function EmailAuth() {
 
         <Text style={styles.footerText}>
           Already have an account?{' '}
-          <Text style={styles.link} onPress={() => router.push('/(drawer)/(auth)/LogIn2')}>
+          <Text style={styles.link} onPress={() => router.push('/(auth)/LogIn2')}>
             Login
           </Text>
         </Text>

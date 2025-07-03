@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 const recentDesigns = [
   { id: '1', label: 'Untitled Design', image: 'https://placehold.co/120x90/FFB6E6/fff?text=Design' },
@@ -12,60 +13,64 @@ const designs = [
 ];
 
 export default function ProjectsScreen() {
+  const { colors } = useTheme();
   return (
-    <ScrollView style={styles.container}>
-      {/* Header with background image */}
-      <View style={styles.headerImgContainer}>
-        <Image source={require('../../../assets/images/project.jpg')} style={styles.headerImg} />
-        <View style={styles.headerOverlay} />
-        <TouchableOpacity style={styles.menuBtn}>
-          <Ionicons name="menu" size={28} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Projects</Text>
-      </View>
-      {/* Filters */}
-      <View style={styles.filtersRow}>
-        <TouchableOpacity style={styles.filterBtn}><Text>Owner ▼</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}><Text>Category ▼</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}><Text>Date modified ▼</Text></TouchableOpacity>
-      </View>
-      {/* Tabs */}
-      <View style={styles.tabsRow}>
-        <TouchableOpacity style={styles.tabActive}><Text>All</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.tab}><Text>Folders</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.tab}><Text>Designs</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.tab}><Text>Images</Text></TouchableOpacity>
-      </View>
-      {/* Recent Designs */}
-      <Text style={styles.sectionTitle}>Recent designs</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalList}>
-        {recentDesigns.map(item => (
-          <View key={item.id} style={styles.designCard}>
-            <Image source={{ uri: item.image }} style={styles.designImg} />
-            <Text style={styles.designLabel}>{item.label}</Text>
-          </View>
-        ))}
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <Text style={{ color: colors.text }}>Projects Content</Text>
+      <ScrollView style={styles.container}>
+        {/* Header with background image */}
+        <View style={styles.headerImgContainer}>
+          <Image source={require('../../../assets/images/project.jpg')} style={styles.headerImg} />
+          <View style={styles.headerOverlay} />
+          <TouchableOpacity style={styles.menuBtn}>
+            <Ionicons name="menu" size={28} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Projects</Text>
+        </View>
+        {/* Filters */}
+        <View style={styles.filtersRow}>
+          <TouchableOpacity style={styles.filterBtn}><Text>Owner ▼</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.filterBtn}><Text>Category ▼</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.filterBtn}><Text>Date modified ▼</Text></TouchableOpacity>
+        </View>
+        {/* Tabs */}
+        <View style={styles.tabsRow}>
+          <TouchableOpacity style={styles.tabActive}><Text>All</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.tab}><Text>Folders</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.tab}><Text>Designs</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.tab}><Text>Images</Text></TouchableOpacity>
+        </View>
+        {/* Recent Designs */}
+        <Text style={styles.sectionTitle}>Recent designs</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalList}>
+          {recentDesigns.map(item => (
+            <View key={item.id} style={styles.designCard}>
+              <Image source={{ uri: item.image }} style={styles.designImg} />
+              <Text style={styles.designLabel}>{item.label}</Text>
+            </View>
+          ))}
+        </ScrollView>
+        {/* Folders */}
+        <Text style={styles.sectionTitle}>Folders</Text>
+        <View style={styles.folderRow}>
+          <Ionicons name="folder" size={32} color="#888" />
+          <Text style={{ marginLeft: 8 }}>Uploads</Text>
+        </View>
+        {/* Designs */}
+        <Text style={styles.sectionTitle}>Designs</Text>
+        <View style={styles.designsGrid}>
+          {designs.map(item => (
+            <View key={item.id} style={styles.gridCard}>
+              <Image source={{ uri: item.image }} style={styles.gridImg} />
+              <Text style={styles.gridLabel}>{item.label}</Text>
+            </View>
+          ))}
+          <TouchableOpacity style={styles.addBtn}>
+            <Ionicons name="add" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-      {/* Folders */}
-      <Text style={styles.sectionTitle}>Folders</Text>
-      <View style={styles.folderRow}>
-        <Ionicons name="folder" size={32} color="#888" />
-        <Text style={{ marginLeft: 8 }}>Uploads</Text>
-      </View>
-      {/* Designs */}
-      <Text style={styles.sectionTitle}>Designs</Text>
-      <View style={styles.designsGrid}>
-        {designs.map(item => (
-          <View key={item.id} style={styles.gridCard}>
-            <Image source={{ uri: item.image }} style={styles.gridImg} />
-            <Text style={styles.gridLabel}>{item.label}</Text>
-          </View>
-        ))}
-        <TouchableOpacity style={styles.addBtn}>
-          <Ionicons name="add" size={28} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 

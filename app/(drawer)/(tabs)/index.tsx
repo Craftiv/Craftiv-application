@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import CategoryTabs from '../../../components/CategoryTabs';
 import Header from '../../../components/Header';
 import Section from '../../../components/Section';
 import { useDesigns } from '../../../contexts/DesignContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 // Dummy data for other sections
 const whiteboardData = [
@@ -33,6 +34,7 @@ interface DocTemplate {
 }
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
   const { recentDesigns } = useDesigns();
   const router = useRouter();
   const [docsTemplates, setDocsTemplates] = useState<DocTemplate[]>([]);
@@ -49,7 +51,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      
       <StatusBar barStyle="dark-content" />
       <Header />
       <ScrollView>
@@ -67,7 +70,7 @@ export default function HomeScreen() {
         />
         <Section title="Docs" data={docsTemplates.map(t => ({ id: t.id, label: t.text ? t.text.slice(0, 20) + (t.text.length > 20 ? '...' : '') : 'Doc', image: '', preview: t.text }))} />
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

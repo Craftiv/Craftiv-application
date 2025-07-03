@@ -89,14 +89,14 @@ const [errorMsg, setErrorMsg] = useState<string | null>(null);
         <Text style={styles.buttonText}>Continue with Facebook</Text>
       </TouchableOpacity>
 
-              <TouchableOpacity style={styles.button} onPress={() => router.push('/(drawer)/(auth)/SignUpfill')}>
+              <TouchableOpacity style={styles.button} onPress={() => router.replace('/(auth)/SignUpfill')}>
         <Ionicons name="mail-outline" size={24} color="black" />
         <Text style={styles.buttonText}>Continue with email</Text>
       </TouchableOpacity>
 
       <Text style={styles.loginText}>
         Already have an account?
-        <Link href="/(drawer)/LogIn2" style={styles.link}>Login</Link>
+        <Link href="/(auth)/LogIn2" style={styles.link}>Login</Link>
         
          
       </Text>
