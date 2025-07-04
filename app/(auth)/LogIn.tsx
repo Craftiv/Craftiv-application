@@ -124,7 +124,7 @@ export default function LoginScreen() {
                 <View style={styles.inputContainer}>
                   <TextInput
                     style={styles.input}
-                    placeholder="Name"
+                    placeholder="Firstame"
                     value={name}
                     onChangeText={setName}
                     placeholderTextColor="#aaa"

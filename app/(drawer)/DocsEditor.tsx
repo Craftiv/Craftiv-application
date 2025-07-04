@@ -2,6 +2,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { FlatList, ListRenderItem, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../../contexts/ThemeContext';
 
 // Define a type for a doc template
 interface DocTemplate {
@@ -13,6 +14,7 @@ interface DocTemplate {
 }
 
 export default function DocsEditor() {
+  const { colors, isDark } = useTheme();
   const [text, setText] = useState('');
   const [isBold, setIsBold] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -51,7 +53,7 @@ export default function DocsEditor() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       {/* Top Toolbar */}
       <View style={styles.topToolbar}>
         <TouchableOpacity onPress={undo}><Ionicons name="arrow-undo" size={24} color="#333" /></TouchableOpacity>
@@ -118,7 +120,7 @@ export default function DocsEditor() {
       </Modal>
 
       {/* Docs Templates Gallery */}
-      <Text style={styles.templatesTitle}>Docs Templates</Text>
+      <Text style={[styles.templatesTitle, { color: isDark ? '#6366F1' : colors.text }]}>Docs Templates</Text>
       <FlatList
         data={templates}
         renderItem={renderTemplate}

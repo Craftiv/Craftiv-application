@@ -19,7 +19,8 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function EmailAuth() {
   const router = useRouter();
   const { setIsAuthenticated } = useAuth();
-  const [name, setName] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ export default function EmailAuth() {
 
   const handleSignUp = async () => {
     // 1. Validation
-    if (!name || !email || !password) {
+    if (!firstname || !lastname || !email || !password) {
       Alert.alert('Error', 'All fields are required');
       return;
     }
@@ -71,7 +72,7 @@ export default function EmailAuth() {
     //   const response = await fetch('https://your-backend.com/api/signup', {
     //     method: 'POST',
     //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ name, email, password }),
+    //     body: JSON.stringify({ firstname, lastname, email, password }),
     //   });
 
     //   const data = await response.json();
@@ -102,13 +103,22 @@ export default function EmailAuth() {
 
         {/* Inputs */}
         <TextInput
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
+          placeholder="First Name"
+          value={firstname}
+          onChangeText={setFirstname}
           style={styles.input}
           placeholderTextColor="#999"
-          accessibilityLabel="Name input"
-          textContentType="name"
+          accessibilityLabel="First name input"
+          textContentType="givenName"
+        />
+        <TextInput
+          placeholder="Last Name"
+          value={lastname}
+          onChangeText={setLastname}
+          style={styles.input}
+          placeholderTextColor="#999"
+          accessibilityLabel="Last name input"
+          textContentType="familyName"
         />
         <TextInput
           placeholder="Email"

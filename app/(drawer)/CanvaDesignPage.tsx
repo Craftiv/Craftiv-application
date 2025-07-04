@@ -8,6 +8,7 @@ import {
   Modal,
   PanResponder,
   SafeAreaView as RNSafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -54,6 +55,96 @@ interface ResizeState {
   startHeight: number;
   elementId: string | null;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F4F4FF',
+    paddingTop: 24,
+    paddingBottom: 12,
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  topToolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  toolbarButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  canvasContainer: {
+    flex: 1,
+    margin: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  canvas: {
+    width: CANVAS_WIDTH,
+    height: CANVAS_HEIGHT,
+    borderRadius: 8,
+  },
+  bottomToolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  toolButton: {
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+  },
+  activeToolButton: {
+    backgroundColor: '#E3F2FD',
+  },
+  toolLabel: {
+    fontSize: 12,
+    marginTop: 4,
+    color: '#333',
+  },
+  activeToolLabel: {
+    color: '#007AFF',
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#FFEBEE',
+  },
+  activeToolbarButton: {
+    backgroundColor: '#E3F2FD',
+  },
+  toolbarButtonLabel: {
+    fontSize: 12,
+    marginLeft: 4,
+    color: '#333',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#222',
+    textAlign: 'center',
+    flex: 1,
+  },
+});
 
 export default function CanvaDesignPage() {
   const {
@@ -706,20 +797,20 @@ export default function CanvaDesignPage() {
   return (
     <RNSafeAreaView style={{ flex: 1, backgroundColor: '#F4F4FF' }}>
       {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F4F4FF', paddingTop: 24, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => { if (typeof router !== 'undefined') router.back && router.back(); }} style={{ position: 'absolute', left: 10, zIndex: 2, padding: 4 }}>
+      <SafeAreaContextView edges={['top']} style={styles.headerBar}>
+        <TouchableOpacity onPress={() => { if (typeof router !== 'undefined') router.back && router.back(); }} style={{ padding: 4 }}>
           <Ionicons name="arrow-back" size={24} color="#222" />
         </TouchableOpacity>
-        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#222' }}>Untitled Design</Text>
-        <TouchableOpacity onPress={clearDesign} style={{ position: 'absolute', right: 10, zIndex: 2, padding: 4 }}>
+        <Text style={styles.headerTitle}>Untitled Design</Text>
+        <TouchableOpacity onPress={clearDesign} style={{ padding: 4 }}>
           <Ionicons name="refresh" size={22} color="#6366F1" />
         </TouchableOpacity>
-      </View>
+      </SafeAreaContextView>
       <View style={{ flex: 1, backgroundColor: '#F4F4FF' }}>
         <StatusBar barStyle="dark-content" />
-        {/* Top Tab Bar with Undo, Redo, Save */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#F4F4FF', paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10, marginBottom: 10 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {/* Top Tab Bar with Save */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#F4F4FF', paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10, marginBottom: 10 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingRight: 16 }}>
             {['select', 'text', 'images', 'shapes', 'background'].map(tab => (
               <TouchableOpacity
                 key={tab}
@@ -731,18 +822,10 @@ export default function CanvaDesignPage() {
                 </Text>
               </TouchableOpacity>
             ))}
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={undo} disabled={!canUndo()} style={{ marginHorizontal: 6 }}>
-              <Ionicons name="arrow-undo" size={22} color={canUndo() ? '#333' : '#999'} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={redo} disabled={!canRedo()} style={{ marginHorizontal: 6 }}>
-              <Ionicons name="arrow-redo" size={22} color={canRedo() ? '#333' : '#999'} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={handleSaveDesign} style={{ marginLeft: 10 }}>
               <Ionicons name="save" size={22} color="#6366F1" />
             </TouchableOpacity>
-          </View>
+          </ScrollView>
         </View>
 
         {/* Canvas */}
@@ -891,77 +974,4 @@ export default function CanvaDesignPage() {
       </View>
     </RNSafeAreaView>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  topToolbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  toolbarButton: {
-    padding: 8,
-    borderRadius: 8,
-  },
-  canvasContainer: {
-    flex: 1,
-    margin: 10,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  canvas: {
-    width: CANVAS_WIDTH,
-    height: CANVAS_HEIGHT,
-    borderRadius: 8,
-  },
-  bottomToolbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  toolButton: {
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 8,
-  },
-  activeToolButton: {
-    backgroundColor: '#E3F2FD',
-  },
-  toolLabel: {
-    fontSize: 12,
-    marginTop: 4,
-    color: '#333',
-  },
-  activeToolLabel: {
-    color: '#007AFF',
-    fontWeight: 'bold',
-  },
-  deleteButton: {
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#FFEBEE',
-  },
-  activeToolbarButton: {
-    backgroundColor: '#E3F2FD',
-  },
-  toolbarButtonLabel: {
-    fontSize: 12,
-    marginLeft: 4,
-    color: '#333',
-  },
-}); 
+} 

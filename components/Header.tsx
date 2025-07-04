@@ -4,8 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function Header() {
+  const { colors, isDark } = useTheme();
   const [searchText, setSearchText] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const navigation = useNavigation();
@@ -36,24 +38,25 @@ export default function Header() {
   };
 
   return (
-    <LinearGradient colors={['#a5b4fc', '#eef2ff','#FFFFFF',]}
-      locations={[0, 0.4, 1]}
-      style={styles.header}>
+    <LinearGradient
+      colors={isDark ? ['#23235B', '#18191B'] : ['#a5b4fc', '#eef2ff', '#FFFFFF']}
+      style={[styles.header, { backgroundColor: isDark ? '#18191B' : '#FFFFFF' }]}
+    >
       <View style={styles.row}>
-        <TouchableOpacity 
-          style={styles.box} 
+        <TouchableOpacity
+          style={[styles.menuBtn, { backgroundColor: isDark ? '#18191B' : '#fff' }]}
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         >
-          <Ionicons name="menu" size={30} color="#333" />
+          <Ionicons name="menu" size={28} color={isDark ? '#6366F1' : '#333'} />
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.box}
-          onPress={() => router.push('/Profile')}
+        <TouchableOpacity
+          style={[styles.profileBtn, { backgroundColor: isDark ? '#18191B' : '#fff' }]}
+          onPress={() => router.push('/(drawer)/Profile')}
         >
-          <Ionicons name="person-circle" size={30} color="#333" />
+          <Ionicons name="person-circle" size={32} color={isDark ? '#6366F1' : '#333'} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>What will you design today?</Text>
+      <Text style={[styles.title, { color: isDark ? '#fff' : colors.text }]}>What will you design today?</Text>
       <View style={styles.searchRow}>
         <TouchableOpacity 
           style={styles.tabBtn}
@@ -93,13 +96,34 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  header: { padding: 10, paddingTop: 30 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: 20, fontWeight: 'bold', marginVertical: 16, color: '#000000', fontFamily: 'Montserrat_700Bold', textAlign: 'center' },
+  header: {
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  menuBtn: {
+    padding: 4,
+    borderRadius: 6,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  profileBtn: {
+    padding: 4,
+    borderRadius: 6,
+  },
   searchRow: { flexDirection: 'row', marginBottom: 8 },
   tabBtn: { display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 8, borderRadius: 8, marginRight: 8, fontFamily: 'Montserrat_700Regular', borderWidth: 1, borderColor: '#ddd' },
   search: { flex: 1, fontSize: 14 },
-  box: { width: 40, height: 40, backgroundColor: '#FFFFFF', borderRadius: 5, alignItems: 'center', justifyContent: 'center' },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',

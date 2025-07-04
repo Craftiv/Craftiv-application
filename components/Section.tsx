@@ -1,5 +1,6 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Card from '../components/Card';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SectionProps {
   title: string;
@@ -9,6 +10,8 @@ interface SectionProps {
 }
 
 export default function Section({ title, data, showAddButton = false, onSeeAll }: SectionProps) {
+  const { colors, isDark } = useTheme();
+
   const renderItem = ({ item, index }: { item: any; index: number }) => {
     // Show add button as first item for recent designs
     if (showAddButton && index === 0) {
@@ -25,12 +28,14 @@ export default function Section({ title, data, showAddButton = false, onSeeAll }
   };
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { backgroundColor: isDark ? '#18191B' : '#fff' }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={onSeeAll}>
-          <Text style={styles.seeAll}>See all</Text>
-        </TouchableOpacity>
+        <Text style={[styles.title, { color: isDark ? '#6366F1' : colors.text }]}>{title}</Text>
+        {onSeeAll && (
+          <TouchableOpacity onPress={onSeeAll}>
+            <Text style={[styles.seeAll, { color: isDark ? '#6366F1' : colors.primary }]}>See all</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <FlatList
         data={getDataWithAddButton()}

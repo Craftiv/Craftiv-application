@@ -4,17 +4,18 @@ import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 
 import { useDesigns } from '../../contexts/DesignContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useDesignStore } from '../../stores/designStore';
 
 export default function YourStories() {
@@ -23,6 +24,7 @@ export default function YourStories() {
   const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
   const viewShotRef = useRef<ViewShot>(null);
   const router = useRouter();
+  const { colors, isDark } = useTheme();
 
   const handleDesignPress = async (designId: string) => {
     try {
@@ -134,7 +136,7 @@ export default function YourStories() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
@@ -146,7 +148,7 @@ export default function YourStories() {
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Your Stories</Text>
+          <Text style={[styles.headerTitle, { color: isDark ? '#6366F1' : colors.text }]}>Your Stories</Text>
           <Text style={styles.headerSubtitle}>
             {recentDesigns.length} design{recentDesigns.length !== 1 ? 's' : ''}
           </Text>
