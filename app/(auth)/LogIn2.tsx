@@ -1,4 +1,5 @@
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as Google from 'expo-auth-session/providers/google';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -27,19 +28,48 @@ export default function LogIn2() {
     scopes: ['openid', 'profile', 'email'],
   });
    const handleGoogleSignIn = async () => {
+    setErrorMsg(null);
     const result = await promptAsync();
-
     if (result.type === 'success' && result.params?.id_token) {
       try {
-        const decoded: UserInfo = jwtDecode(result.params.id_token);
+        const idToken = result.params.id_token;
+        const decoded: UserInfo = jwtDecode(idToken);
         setUserInfo(decoded);
-        setErrorMsg(null);
+        // Send the id_token to your backend
+        await sendIdTokenToBackend(idToken);
       } catch (err) {
         console.error('Token decode error:', err);
         setErrorMsg('Failed to decode token');
+        Alert.alert('Google Sign-In Error', 'Failed to decode ID token.');
       }
+    } else if (result.type === 'cancel') {
+      setErrorMsg('Sign-in cancelled.');
+      Alert.alert('Google Sign-In', 'Sign-in cancelled.');
     } else if (result.type === 'error') {
       setErrorMsg('Authentication failed');
+      Alert.alert('Google Sign-In Error', 'Authentication failed.');
+    }
+  };
+
+  const sendIdTokenToBackend = async (idToken: string) => {
+    try {
+      const backendResponse = await fetch('http://localhost:8080/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      });
+      if (!backendResponse.ok) {
+        const errorData = await backendResponse.json();
+        throw new Error(errorData.message || 'Failed to authenticate with backend');
+      }
+      const data = await backendResponse.json();
+      await AsyncStorage.setItem('userToken', data.token);
+      Alert.alert('Success', 'Logged in with Google!');
+      router.replace('/(drawer)/(tabs)');
+    } catch (error: any) {
+      console.error('Backend authentication error:', error);
+      setErrorMsg(error.message);
+      Alert.alert('Authentication Failed', error.message);
     }
   };
 
@@ -60,7 +90,7 @@ export default function LogIn2() {
         <TouchableOpacity onPress={()=> router.back()}>
           <Ionicons name="chevron-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.title}>Continue to sign in </Text>
+        <Text style={styles.title}>Continue to sign in for free</Text>
         
       </View>
       
