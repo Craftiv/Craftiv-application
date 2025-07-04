@@ -61,15 +61,14 @@ export default function HomeScreen() {
 
         
         {/* <QuickActions /> */}
-        <Section title="Recent Designs" data={recentDesigns} showAddButton={true} titleStyle={{ color: isDark ? '#6366F1' : colors.text }} />
+        <Section title="Recent Designs" data={recentDesigns} showAddButton={true} />
         <Section title="Whiteboard" data={whiteboardData} />
         <Section 
           title="Your stories" 
           data={storyTemplatesData} 
           onSeeAll={handleSeeAllStories}
-          titleStyle={{ color: isDark ? '#6366F1' : colors.text }}
         />
-        <Section title="Docs" data={docsTemplates.map(t => ({ id: t.id, label: t.text ? t.text.slice(0, 20) + (t.text.length > 20 ? '...' : '') : 'Doc', image: '', preview: t.text }))} titleStyle={{ color: isDark ? '#6366F1' : colors.text }} />
+        <Section title="Docs" data={docsTemplates.map(t => ({ id: t.id, label: t.text ? t.text.slice(0, 20) + (t.text.length > 20 ? '...' : '') : 'Doc', image: '', preview: t.text }))} />
       </ScrollView>
     </View>
   );

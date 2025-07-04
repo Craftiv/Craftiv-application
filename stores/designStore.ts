@@ -60,6 +60,7 @@ interface DesignStore {
   canvasBackgroundColor: string;
   currentTool: Tool;
   history: HistoryState;
+  designName: string;
   
   // Actions
   addElement: (element: Element) => void;
@@ -72,6 +73,8 @@ interface DesignStore {
   resizeElement: (id: string, newWidth: number, newHeight: number) => void;
   setCanvasBackgroundColor: (color: string) => void;
   setCurrentTool: (tool: Tool) => void;
+  setDesignName: (name: string) => void;
+  clearDesignName: () => void;
   
   // History actions
   undo: () => void;
@@ -115,6 +118,7 @@ export const useDesignStore = create<DesignStore>()(
       canvasBackgroundColor: '#FFFFFF',
       currentTool: 'select',
       history: createHistoryState([]),
+      designName: 'Untitled Design',
 
       // Element actions
       addElement: (element) => {
@@ -233,6 +237,14 @@ export const useDesignStore = create<DesignStore>()(
 
       setCurrentTool: (tool) => {
         set({ currentTool: tool });
+      },
+
+      setDesignName: (name) => {
+        set({ designName: name });
+      },
+
+      clearDesignName: () => {
+        set({ designName: 'Untitled Design' });
       },
 
       // History actions

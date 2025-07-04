@@ -28,7 +28,7 @@ export default function Section({ title, data, showAddButton = false, onSeeAll }
   };
 
   return (
-    <View style={[styles.section, { backgroundColor: isDark ? '#18191B' : '#fff' }]}>
+    <View style={[styles.section, { backgroundColor: 'transparent' }]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: isDark ? '#6366F1' : colors.text }]}>{title}</Text>
         {onSeeAll && (
@@ -49,7 +49,7 @@ export default function Section({ title, data, showAddButton = false, onSeeAll }
 }
 
 const styles = StyleSheet.create({
-  section: { marginVertical: 10, backgroundColor: '#FFFFFF' },
+  section: { marginVertical: 10, backgroundColor: 'transparent' },
   header: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 16, marginBottom: 6 },
   title: { fontWeight: 'bold', fontSize: 18 },
   seeAll: { color: '#000000', fontWeight: 'bold', fontFamily: 'Montserrat_700Bold' },

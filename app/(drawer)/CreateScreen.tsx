@@ -3,11 +3,13 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CreateScreen() {
   const router = useRouter();
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
       {/* Search Bar */}
       <View style={styles.searchBar}>
         <Ionicons name="search" size={20} color="#888" style={{ marginRight: 8 }} />
@@ -16,7 +18,7 @@ export default function CreateScreen() {
           placeholder="What would you love to create?"
           placeholderTextColor="#888"
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="close" size={20} color="#888" />
         </TouchableOpacity>
       </View>
@@ -66,13 +68,14 @@ export default function CreateScreen() {
           </View>
         ))}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', borderRadius: 12, padding: 10, marginTop: 16, marginBottom: 10 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', borderRadius: 12, padding: 10, marginTop: 32, marginBottom: 10 },
   searchInput: { flex: 1, fontSize: 16, color: '#222' },
   tabsRow: { flexDirection: 'row', marginBottom: 10 },
   tab: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginRight: 8 },

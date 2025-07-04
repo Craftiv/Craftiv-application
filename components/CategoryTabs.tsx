@@ -72,7 +72,7 @@ export default function CategoryTabs() {
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingVertical: 10, paddingLeft: 10, backgroundColor: '#FFFFFF' },
+  scroll: { paddingVertical: 10, paddingLeft: 10, backgroundColor: 'transparent' },
   tab: { alignItems: 'center', marginRight: 20, },
   label: { fontSize: 12, color: '#333', marginTop: 4 ,fontFamily: 'Montserrat_700Regular'},
   iconCircle: { width: 40, height: 40, borderRadius: 40, alignItems: 'center', justifyContent: 'center' }

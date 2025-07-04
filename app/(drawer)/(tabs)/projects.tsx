@@ -1,8 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import {
   Dimensions,
@@ -15,6 +14,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -134,8 +134,7 @@ const mockImages = Array.from({ length: 3 }).map((_, i) => ({
 }));
 
 export default function ProjectsScreen() {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
+  const { colors, isDark } = useTheme();
   const [selectedTab, setSelectedTab] = useState('All');
   const designs = mockProjects;
 
@@ -185,19 +184,41 @@ export default function ProjectsScreen() {
     alert(`You clicked on: ${item.title}`);
   };
 
+  const handleUploadPress = async () => {
+    // Ask for permission
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert('Permission to access media library is required!');
+      return;
+    }
+
+    // Open image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // or .All if you want videos too
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const selectedAsset = result.assets[0];
+      // Do something with the selected file (e.g., upload to backend, show preview, etc.)
+      alert('Selected file: ' + selectedAsset.uri);
+    }
+  };
+
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header with bird texture and large title */}
       <ImageBackground
         source={require('@/assets/images/projectimg.jpg')}
-        style={styles.headerBackground}
+        style={[styles.headerBackground, { backgroundColor: colors.surface }]}
         imageStyle={{ opacity: 0.22 }}
         resizeMode="cover"
       >
-        <ThemedText style={styles.headerTitle}>Projects</ThemedText>
+        <ThemedText style={[styles.headerTitle, { color: colors.text }]}>Projects</ThemedText>
       </ImageBackground>
       {/* Filter Bar */}
-      <View style={styles.filterBar}>
+      <View style={[styles.filterBar, { backgroundColor: colors.surface }]}>
         {/* Owner Dropdown */}
         <View style={{ position: 'relative', flex: 1 }}>
           <TouchableOpacity
@@ -315,12 +336,16 @@ export default function ProjectsScreen() {
             <ThemedText style={[styles.tabText, selectedTab === tab && styles.tabTextActive]}>{tab}</ThemedText>
           </TouchableOpacity>
         ))}
+        <TouchableOpacity style={styles.tab} onPress={handleUploadPress}>
+          <MaterialIcons name="cloud-upload" size={18} color="#6366F1" />
+          <ThemedText style={styles.tabText}>Upload</ThemedText>
+        </TouchableOpacity>
       </View>
       {/* Tab Content */}
       {selectedTab === 'All' && (
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Recent Designs - horizontal scroll */}
-          <ThemedText style={styles.sectionHeader}>Recent designs</ThemedText>
+          <ThemedText style={[styles.sectionHeader, { color: colors.text }]}>Recent designs</ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 16 }}>
             {designs.map(item => (
               <ImageBackground
@@ -340,8 +365,10 @@ export default function ProjectsScreen() {
           <View style={styles.folderRow}>
             {mockFolders.map(folder => (
               <TouchableOpacity key={folder.id} onPress={() => handleCardPress(folder)} activeOpacity={0.85}>
-                <View style={styles.folderCard}>
-                  <MaterialIcons name="cloud-upload" size={32} color="#6366F1" />
+                <View style={[styles.folderCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                  <TouchableOpacity onPress={handleUploadPress} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <MaterialIcons name="cloud-upload" size={32} color="#6366F1" />
+                  </TouchableOpacity>
                   <ThemedText style={styles.folderName}>{folder.name}</ThemedText>
                 </View>
               </TouchableOpacity>
@@ -392,8 +419,10 @@ export default function ProjectsScreen() {
           <View style={styles.folderRow}>
             {mockFolders.map(folder => (
               <TouchableOpacity key={folder.id} onPress={() => handleCardPress(folder)} activeOpacity={0.85}>
-                <View style={styles.folderCard}>
-                  <MaterialIcons name="cloud-upload" size={32} color="#6366F1" />
+                <View style={[styles.folderCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                  <TouchableOpacity onPress={handleUploadPress} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <MaterialIcons name="cloud-upload" size={32} color="#6366F1" />
+                  </TouchableOpacity>
                   <ThemedText style={styles.folderName}>{folder.name}</ThemedText>
                 </View>
               </TouchableOpacity>
@@ -691,6 +720,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: '#6366F1',
   },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+  },
   tabText: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -840,4 +878,5 @@ const styles = StyleSheet.create({
     margin: 16,
     marginBottom: 8,
   },
+  section: { marginVertical: 10, backgroundColor: 'transparent' },
 }); 

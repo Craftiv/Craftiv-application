@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Switch,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { useTheme } from '../../../contexts/ThemeContext';
 
@@ -15,6 +15,21 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   const settingsSections = [
+    {
+      title: 'General',
+      items: [
+        {
+          id: 'language',
+          title: 'Language',
+          subtitle: 'Current: English',
+          type: 'link',
+          icon: 'globe',
+          onPress: () => {
+            // Placeholder for language selection
+          },
+        },
+      ],
+    },
     {
       title: 'Appearance',
       items: [
@@ -219,7 +234,12 @@ export default function SettingsScreen() {
 
   const renderSettingItem = (item: any) => {
     return (
-      <View key={item.id} style={styles.settingItem}>
+      <TouchableOpacity
+        key={item.id}
+        style={styles.settingItem}
+        onPress={item.onPress}
+        activeOpacity={item.type === 'link' ? 0.7 : 1}
+      >
         <View style={styles.settingIcon}>
           <Ionicons name={item.icon as any} size={20} color={colors.primary} />
         </View>
@@ -239,7 +259,7 @@ export default function SettingsScreen() {
             <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

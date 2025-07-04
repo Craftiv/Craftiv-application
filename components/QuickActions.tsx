@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -9,7 +10,7 @@ const actions = [
   { icon: <MaterialIcons name="web" size={28} color="#EA4335" />, label: 'Website' },
 ];
 
-export default function QuickActions(props) {
+export default function QuickActions(props: React.PropsWithChildren<{}>) {
   const { colors, isDark } = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: isDark ? '#18191B' : '#fff' }]}>
