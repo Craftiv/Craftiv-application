@@ -1,0 +1,5 @@
+com\craftiv\templateservice\repository\TemplateRepository.class
+com\craftiv\templateservice\TemplateServiceApplication.class
+com\craftiv\templateservice\service\TemplateService.class
+com\craftiv\templateservice\controller\TemplateController.class
+com\craftiv\templateservice\model\Template.class
